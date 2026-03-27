@@ -1,0 +1,463 @@
+{%- style -%}
+  /* Google Font Import */
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+
+  .s-card-stack-inner-{{ section.id }} {
+    --space-unit: 1em;
+    --stack-cards-gap: {{ section.settings.stack_gap }}px;
+    background-color: {{ section.settings.sec_bg_color }};
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .s-card-stack-inner-{{ section.id }} .s-container {
+    max-width: {{ section.settings.container_width }}px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  /* Heading Styles */
+  .s-card-stack-heading {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto {{ section.settings.heading_margin_bottom }}px auto;
+  }
+  .s-csh-subheading {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: {{ section.settings.subtitle_color }};
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+  }
+  .s-csh-title {
+    font-size: {{ section.settings.title_size_desktop }}px;
+    line-height: 1.1;
+    color: {{ section.settings.title_color }};
+    margin-bottom: 15px;
+  }
+  .s-csh-text {
+    font-size: 16px;
+    line-height: 1.5;
+    color: {{ section.settings.text_color }};
+    opacity: 0.8;
+  }
+
+  /* Card Styles */
+  .stack-cards__item {
+    position: sticky;
+    top: 10vh; /* Distance from top when sticking */
+    padding-bottom: 40px;
+    list-style: none;
+    will-change: transform;
+    transition: transform 0.3s ease;
+  }
+
+  .s-card-stack {
+    background-color: #072CFF; /* Default */
+    padding: 50px;
+    border-radius: {{ section.settings.card_border_radius }}px;
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    color: #ffffff;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  }
+
+  .s-cs-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    gap: 30px;
+  }
+
+  .s-cs-col {
+    flex: 1 1 450px;
+  }
+
+  .s-cs-content {
+    position: relative;
+  }
+
+  .s-csc-title {
+    font-size: {{ section.settings.card_title_size }}px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #fff;
+  }
+
+  /* Media/Video Styles */
+  .s-cs-img img, .s-cs-vid-group video {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    display: block;
+    object-fit: cover;
+  }
+  
+  .s-cs-vid-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+  }
+
+  /* Button Styles */
+  .s-card-stack-bottom {
+    margin-top: 60px;
+    text-align: center;
+  }
+  .s-cm-cta a {
+    display: inline-block;
+    background-color: {{ section.settings.btn_bg_color }};
+    color: {{ section.settings.btn_text_color }};
+    padding: 15px 40px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s ease;
+  }
+  .s-cm-cta a:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    background-color: {{ section.settings.btn_hover_color }};
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .s-csh-title { font-size: {{ section.settings.title_size_mobile }}px; }
+    .s-card-stack { padding: 30px; }
+    .s-cs-row { flex-direction: column; text-align: center; }
+    .s-cs-vid-group { grid-template-columns: 1fr; }
+  }
+{%- endstyle -%}
+
+<div class="s-card-stack-inner-{{ section.id }} {{ section.settings.add_class }}">
+  <div class="s-container">
+    
+    <div class="s-card-stack-heading">
+      {% if section.settings.sec_subtitle != blank %}<p class="s-csh-subheading">{{ section.settings.sec_subtitle }}</p>{% endif %}
+      {% if section.settings.sec_title != blank %}<h2 class="s-csh-title">{{ section.settings.sec_title }}</h2>{% endif %}
+      {% if section.settings.sec_text != blank %}<p class="s-csh-text">{{ section.settings.sec_text }}</p>{% endif %}
+    </div>
+
+    <div class="s-card-stack-wrapper">
+      <ul class="stack-cards js-stack-cards">
+        {% for block in section.blocks %}
+          <li class="stack-cards__item js-stack-cards__item" data-color="{{ block.settings.card_bg_color }}">
+            <div class="s-card-stack" style="background-color: {{ block.settings.card_bg_color }};">
+              <div class="s-cs-row">
+                
+                <!-- Content Side -->
+                <div class="s-cs-col">
+                  <div class="s-cs-content">
+                    {% if block.settings.card_icon %}
+                      <img src="{{ block.settings.card_icon | image_url: width: 60 }}" alt="icon" style="margin-bottom:20px; width:40px;">
+                    {% endif %}
+                    <h4 class="s-csc-title">{{ block.settings.card_title }}</h4>
+                    <div class="s-cs-desc">{{ block.settings.card_desc }}</div>
+                  </div>
+                </div>
+
+                <!-- Media Side -->
+                <div class="s-cs-col">
+                   {% if block.settings.card_vid_1 != blank %}
+                      <div class="s-cs-vid-group">
+                         <video playsinline autoplay muted loop preload="auto">
+                            <source src="{{ block.settings.card_vid_1.sources[1].url }}" type="video/mp4">
+                         </video>
+                         {% if block.settings.card_vid_2 != blank %}
+                         <video playsinline autoplay muted loop preload="auto">
+                            <source src="{{ block.settings.card_vid_2.sources[1].url }}" type="video/mp4">
+                         </video>
+                         {% endif %}
+                      </div>
+                   {% elsif block.settings.card_img != blank %}
+                      <div class="s-cs-img">
+                        <img src="{{ block.settings.card_img | image_url: width: 800 }}" alt="media" loading="lazy">
+                      </div>
+                   {% endif %}
+                </div>
+
+              </div>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    {% if section.settings.sf_btn_text != blank %}
+    <div class="s-card-stack-bottom">
+      <p class="s-cm-cta"><a href="{{ section.settings.sf_btn_link }}">{{ section.settings.sf_btn_text }}</a></p>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+
+<script>
+(function() {
+  const stackCards = document.querySelector('.js-stack-cards');
+  if (!stackCards) return;
+
+  const items = stackCards.querySelectorAll('.js-stack-cards__item');
+  const gap = {{ section.settings.stack_gap }};
+
+  function updateStack() {
+    const scrollPos = window.scrollY;
+    
+    items.forEach((item, index) => {
+      const card = item.querySelector('.s-card-stack');
+      const rect = item.getBoundingClientRect();
+      
+      if (rect.top <= 100) { // When card reaches top
+        const scrollingBeyond = Math.abs(rect.top - 100);
+        const scale = Math.max(0.9, 1 - (scrollingBeyond / 5000));
+        card.style.transform = `scale(${scale})`;
+      } else {
+        card.style.transform = `scale(1)`;
+      }
+    });
+  }
+
+  window.addEventListener('scroll', updateStack);
+  updateStack();
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Ultimate Card Stack",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout Settings"
+    },
+    {
+      "type": "number",
+      "id": "container_width",
+      "label": "Container Width (px)",
+      "default": 1200
+    },
+    {
+      "type": "range",
+      "id": "stack_gap",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Stack Gap",
+      "default": 20
+    },
+    {
+      "type": "color",
+      "id": "sec_bg_color",
+      "label": "Section Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "text",
+      "id": "sec_title",
+      "label": "Main Title",
+      "default": "Our Process"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "title_size_desktop",
+      "min": 30,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Title Size (Desktop)",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "title_size_mobile",
+      "min": 20,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "label": "Title Size (Mobile)",
+      "default": 32
+    },
+    {
+      "type": "text",
+      "id": "sec_subtitle",
+      "label": "Subtitle",
+      "default": "HOW IT WORKS"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle Color",
+      "default": "#072CFF"
+    },
+    {
+      "type": "textarea",
+      "id": "sec_text",
+      "label": "Description",
+      "default": "Add a short description here."
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Description Color",
+      "default": "#444444"
+    },
+    {
+      "type": "header",
+      "content": "Card Styles"
+    },
+    {
+      "type": "range",
+      "id": "card_title_size",
+      "min": 18,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Card Title Size",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "label": "Card Corner Radius",
+      "default": 24
+    },
+    {
+      "type": "header",
+      "content": "Button Settings"
+    },
+    {
+      "type": "text",
+      "id": "sf_btn_text",
+      "label": "Button Label",
+      "default": "Get Started"
+    },
+    {
+      "type": "url",
+      "id": "sf_btn_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "color",
+      "id": "btn_bg_color",
+      "label": "Button Background",
+      "default": "#072CFF"
+    },
+    {
+      "type": "color",
+      "id": "btn_text_color",
+      "label": "Button Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "btn_hover_color",
+      "label": "Button Hover Color",
+      "default": "#001BB1"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 80
+    }
+  ],
+  "blocks": [
+    {
+      "type": "card_item",
+      "name": "Card",
+      "settings": [
+        {
+          "type": "color",
+          "id": "card_bg_color",
+          "label": "Card Background Color",
+          "default": "#072CFF"
+        },
+        {
+          "type": "text",
+          "id": "card_title",
+          "label": "Card Title",
+          "default": "Feature Name"
+        },
+        {
+          "type": "richtext",
+          "id": "card_desc",
+          "label": "Card Description",
+          "default": "<p>Describe your amazing feature here.</p>"
+        },
+        {
+          "type": "image_picker",
+          "id": "card_icon",
+          "label": "Small Icon"
+        },
+        {
+          "type": "header",
+          "content": "Media (Image or Video)"
+        },
+        {
+          "type": "image_picker",
+          "id": "card_img",
+          "label": "Card Image"
+        },
+        {
+          "type": "video",
+          "id": "card_vid_1",
+          "label": "Video 1"
+        },
+        {
+          "type": "video",
+          "id": "card_vid_2",
+          "label": "Video 2 (Optional)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Ultimate Card Stack",
+      "blocks": [
+        { "type": "card_item" },
+        { "type": "card_item" },
+        { "type": "card_item" }
+      ]
+    }
+  ]
+}
+{% endschema %}
